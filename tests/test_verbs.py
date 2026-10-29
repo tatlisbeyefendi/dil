@@ -85,6 +85,25 @@ def test_negation(stem: str, tense: str, person: str, expected: str) -> None:
     assert conjugate(stem, tense=tense, person=person, negative=True) == expected
 
 
+# Inability: -yA-Ma, never -yAbil-Me (uyuyamıyorum, not uyuyabilmiyorum).
+@pytest.mark.parametrize(
+    ("stem", "tense", "person", "expected"),
+    [
+        ("uyu", "present", "1s", "uyuyamıyorum"),
+        ("gel", "present", "1s", "gelemiyorum"),
+        ("bak", "present", "3s", "bakamıyor"),
+        ("gel", "past", "1s", "gelemedim"),
+        ("gel", "aorist", "1s", "gelemem"),
+        ("gel", "aorist", "3s", "gelemez"),
+        ("gel", "future", "1s", "gelemeyeceğim"),
+        ("ye", "present", "1s", "yiyemiyorum"),
+        ("de", "present", "3s", "diyemiyor"),
+    ],
+)
+def test_inability(stem: str, tense: str, person: str, expected: str) -> None:
+    assert conjugate(stem, tense=tense, person=person, negative=True, ability=True) == expected
+
+
 @pytest.mark.parametrize(
     ("stem", "tense", "person", "expected"),
     [
@@ -126,5 +145,3 @@ def test_bad_tense_and_person_are_rejected() -> None:
         paradigm("gel", tense="imperative")
     with pytest.raises(ValueError):
         conjugate("gel", person="4s")
-    with pytest.raises(ValueError):
-        paradigm("gel", tense="aorist", negative=True, ability=True)

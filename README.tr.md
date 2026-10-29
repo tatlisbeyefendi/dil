@@ -103,7 +103,7 @@ olmayan bir kelime de sorunsuz çekilir, sadece istisnaları bilemez.
 ## Testler
 
 ```bash
-python3 -m pytest      # 235 test
+python3 -m pytest      # 244 test
 python3 -m ruff check .
 ```
 

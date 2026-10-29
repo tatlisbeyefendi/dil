@@ -19,4 +19,5 @@ and the project uses [Semantic Versioning](https://semver.org/).
   devoicing, vowel elision, Turkish-aware upper/lower casing for `ı/İ`.
 - **Lexicon** — exception tables for stems that soften or drop a vowel.
 - **CLI** — `noun`, `verb`, `number`, `syllables`, `sound`, `lexicon`, every one with `--json`.
-- 235 tests, ruff-clean, CI on three operating systems × four Python versions.
+- Inability (`-yA-mA`): `uyuyamıyorum`, `gelemem`, `gelemeyeceğim`.
+- 244 tests, ruff-clean, CI on three operating systems × four Python versions.

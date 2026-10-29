@@ -105,7 +105,7 @@ is not listed still inflects correctly — it just cannot know its exceptions.
 ## Tests
 
 ```bash
-python3 -m pytest      # 235 tests
+python3 -m pytest      # 244 tests
 python3 -m ruff check .
 ```
 

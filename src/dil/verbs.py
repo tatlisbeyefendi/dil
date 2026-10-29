@@ -98,6 +98,17 @@ def _negative_base(stem: str) -> str:
     return stem + "m" + ph.harmony_2(stem)
 
 
+def _ability_reduced(stem: str) -> str:
+    """The stem inability is built on: -yA-, with no -bil- (uyuyamıyorum).
+
+    Turkish cannot say *uyuyabilmiyorum* — negation shrinks the ability suffix to
+    a single vowel, so "uyu" + "-ya-" + "-mı-" + "-yor" is the correct shape.
+    """
+    root = ABILITY_STEM.get(stem) or VOICING.get(stem, stem)
+    buffer = "y" if ph.ends_with_vowel(root) else ""
+    return root + buffer + ph.harmony_2(root)
+
+
 def _type_a(base: str) -> dict[str, str]:
     """Personal endings of present, aorist, evidential and necessitative."""
     h2 = ph.harmony_2(base)
@@ -165,20 +176,18 @@ def paradigm(
     """All six persons of one stem/tense combination."""
     if tense not in TENSES:
         raise ValueError(f"unknown tense: {tense!r}")
-    base = _ability_base(stem) if ability else stem
 
-    if tense == "aorist":
-        if negative:
-            if ability:
-                raise ValueError("çekemem-type ability + negation is not supported yet")
-            return _aorist_paradigm(stem)
-        return _type_a(_aorist_base(base))
+    base = _ability_base(stem) if ability else stem
+    # Negation always attaches to the plain stem, or to the reduced -yA- of an
+    # ability verb; -bil- never survives next to -mA.
+    negative_stem = _ability_reduced(stem) if ability else stem
 
     if negative:
-        negative_base = _negative_base(base)
+        negative_base = _negative_base(negative_stem)
+        if tense == "aorist":
+            return _aorist_paradigm(negative_stem)
         if tense == "present":
-            base = negative_base[:-1] + ph.harmony_4(base) + "yor"
-            return _type_a(base)
+            return _type_a(negative_base[:-1] + ph.harmony_4(negative_stem) + "yor")
         if tense == "past":
             return _type_b(
                 negative_base + ph.assimilate(negative_base, "d" + ph.harmony_4(negative_base))
@@ -186,20 +195,15 @@ def paradigm(
         if tense == "evidential":
             return _type_a(negative_base + "m" + ph.harmony_4(negative_base) + "ş")
         if tense == "future":
-            base = (
-                negative_base
-                + "y"
-                + ph.harmony_2(negative_base)
-                + "c"
-                + ph.harmony_2(negative_base)
-                + "k"
-            )
-            return _future_paradigm(base)
+            accented = ph.harmony_2(negative_base)
+            return _future_paradigm(negative_base + "y" + accented + "c" + accented + "k")
         if tense == "necessitative":
             return _type_a(negative_base + _necessitative_suffix(negative_base))
 
     if tense == "present":
         return _type_a(_present_base(base))
+    if tense == "aorist":
+        return _type_a(_aorist_base(base))
     if tense == "past":
         return _type_b(base + ph.assimilate(base, "d" + ph.harmony_4(base)))
     if tense == "evidential":
@@ -208,7 +212,8 @@ def paradigm(
         base = VOICING.get(base, base)
         base = ABILITY_STEM.get(base, base)
         buffer = "y" if ph.ends_with_vowel(base) else ""
-        return _future_paradigm(base + buffer + ph.harmony_2(base) + "c" + ph.harmony_2(base) + "k")
+        accented = ph.harmony_2(base)
+        return _future_paradigm(base + buffer + accented + "c" + accented + "k")
     if tense == "necessitative":
         return _type_a(base + _necessitative_suffix(base))
     raise ValueError(f"unknown tense: {tense!r}")  # pragma: no cover
