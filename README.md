@@ -1,5 +1,16 @@
 # dil
 
+> ## ⚠️ HEAVY DEVELOPMENT — EXPECT PLENTY OF BUGS, SORRY
+>
+> This is an experimental engine. The rule set is still being written, some forms it
+> produces are wrong, and the exception lexicon is incomplete. If a word comes out
+> broken, that is expected — open an issue and we will fix it together. Do not rely on
+> this alone for anything critical; check the output by eye.
+
+> ### ⚠️ AĞIR GELİŞTİRME AŞAMASINDA — BOL BOL HATA VAR, KUSURA BAKMAYIN
+>
+> (Türkçe: bu araç ağır geliştirme aşamasında, bol bol hata var, kusura bakmayın.)
+
 **A Turkish language engine** — inflection, numbers, syllables and sound changes.
 Zero dependencies, fully offline, Python 3.11+.
 
@@ -118,6 +129,22 @@ The suite asserts real Turkish forms: `kitabımızda`, `okumuyorum`, `görmelile
   surface form into stem + features — is not here yet, it is first on the roadmap.
 - Syllabification is a heuristic; loanword onsets may differ from the TDK guide.
 - The stress guess assumes final stress, which place names and some adverbs break.
+
+## Known bugs and gaps
+
+Nothing here is finished — I am publishing it on purpose, to find out where it breaks:
+
+- **No derivational morphology.** `-ki`, `-lik`, `-ci`, `-siz` are not implemented; only
+  inflection works. `kitaptaki`, `güzellik`, `gözcü` cannot be produced yet.
+- **The exception lexicon is small.** About 90 stems are listed. For anything else the engine
+  cannot know about softening or vowel elision — pass `--softening` / `--drop-vowel` yourself.
+- **No compound tenses.** `geliyormuşum`, `gelecekmişim`, `gelmiş olacağım` are missing.
+- **Syllabification is a heuristic** and may differ from the TDK guide on loanword clusters.
+- **Stress is a rough guess.** Place names and some adverbs behave differently.
+- **No parsing yet** — turning `kitaplarımızdakiler` back into stem + features is not here.
+
+If you find a bug, open an issue with the input, what came out, and what Turkish actually says.
+The fix is usually one line.
 
 ## Roadmap
 

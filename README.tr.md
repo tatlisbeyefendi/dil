@@ -1,5 +1,12 @@
 # dil
 
+> ## ⚠️ AĞIR GELİŞTİRME AŞAMASINDA — BOL BOL HATA VAR, KUSURA BAKMAYIN
+>
+> Bu araç **deneysel** durumda. Kurallar hâlâ yazılıyor, ürettiği biçimlerin bir kısmı
+> yanlış olabilir, sözlükteki istisnalar eksik. Bir kelimede hata görürseniz şaşırmayın:
+> issue açın, birlikte düzeltelim. Hiçbir kritik işte tek başına güvenmeyin — çıktıyı
+> gözünüzle doğrulayın.
+
 **Türkçe dil motoru** — çekim, sayı, hece ve ses olayları. Sıfır bağımlılık, tamamen offline, Python 3.11+.
 
 Türkçe'nin kurallarını tahmine bırakmaz: ünlü uyumu, ünsüz yumuşaması ve sertleşmesi, ünlü düşmesi, kaynaştırma harfleri ve kişi ekleri tek tek kodlanmıştır. `dil`, bir kelimenin bütün çekimlerini üretir — siz yazmadan önce.
@@ -116,6 +123,23 @@ Testler gerçek Türkçe formları doğrular: `kitabımızda`, `okumuyorum`, `g�
   (bir yüzey biçimini kök + özellik olarak çözümlemek) henüz yok — yol haritasında.
 - Heceleme bir sezgiseldir; alıntı kelimelerin ünsüz kümelerinde TDK kılavuzundan sapabilir.
 - Vurgu tahmini son hece varsayımına dayanır, yer adları ve bazı zarflar farklıdır.
+
+## Bilinen hatalar ve eksikler
+
+Her şey bitmedi, bilerek yayınlıyorum — nerede tökezlediğini bileyim diye:
+
+- **Yapım ekleri yok.** `-ki`, `-lik`, `-ci`, `-siz` gibi türetme ekleri henüz çalışmıyor,
+  yalnızca çekim var. `kitaptaki`, `güzellik`, `gözcü` üretilemez.
+- **İstisna sözlüğü küçük.** ~90 kök tanımlı; listede olmayan bir kelimenin yumuşaması ya da
+  ünlü düşmesi bilinemez (`--softening` / `--drop-vowel` ile elle verilebilir).
+- **Birleşik zamanlar eksik.** `geliyormuşum`, `gelecekmişim`, `gelmiş olacağım` gibi
+  katmerli yapılar yok.
+- **Heceleme sezgisel.** Alıntı kelimelerin ünsüz kümelerinde TDK kılavuzundan sapabilir.
+- **Vurgu kaba bir tahmin.** Yer adları ve bazı zarflar farklı davranır.
+- **Ters yön yok.** Yüzey biçimden kök çözümlemesi (`kitaplarımızdakiler` → ?) henüz yok.
+
+Bir hata bulursan **issue aç**: hangi girdi, ne çıktı, Türkçede doğrusu ne. Düzeltmesi genelde
+tek satır.
 
 ## Yol haritası
 

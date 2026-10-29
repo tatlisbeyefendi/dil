@@ -5,6 +5,9 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [0.1.0] — 2026-10-30
 
+> **Ağır geliştirme aşamasında.** İlk yayın; kuralların bir kısmı hâlâ yazılıyor ve
+> bilinen hatalar var. Geri bildirim için issue açın.
+
 ### Added
 - **Nouns** — 4 stem shapes × 7 cases in one call: plural, six possessives, cases, copula and
   their combinations (`kitaplarımızda`, `arabasıyla`, `sularına`).
