@@ -1,36 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800" viewBox="0 0 1000 800">
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="670" viewBox="0 0 1120 670">
 <rect width="100%" height="100%" rx="10" fill="#0f172a"/>
-<text x="24" y="30" fill="#93c5fd" font-size="17" font-family="monospace" font-weight="bold">dil — Türkçe dil motoru</text>
-<text x="24" y="46" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil noun kitap</text>
-<text x="24" y="66" fill="#e5e7eb" font-size="13" font-family="monospace">kitap  (yumuşama · düşme yok)</text>
-<text x="24" y="86" fill="#e5e7eb" font-size="13" font-family="monospace"></text>
-<text x="24" y="106" fill="#e5e7eb" font-size="13" font-family="monospace">                yalın      belirtme     yönelme      bulunma       ayrılma        tamlayan      vasıta</text>
-<text x="24" y="126" fill="#e5e7eb" font-size="13" font-family="monospace">  ------------  ---------  -----------  -----------  ------------  -------------  ------------  ------------</text>
-<text x="24" y="146" fill="#e5e7eb" font-size="13" font-family="monospace">  tekil         kitap      kitabı       kitaba       kitapta       kitaptan       kitabın       kitapla</text>
-<text x="24" y="166" fill="#e5e7eb" font-size="13" font-family="monospace">  çoğul         kitaplar   kitapları    kitaplara    kitaplarda    kitaplardan    kitapların    kitaplarla</text>
-<text x="24" y="186" fill="#e5e7eb" font-size="13" font-family="monospace">  tekil iyelik  kitabı     kitabını     kitabına     kitabında     kitabından     kitabının     kitabıyla</text>
-<text x="24" y="206" fill="#e5e7eb" font-size="13" font-family="monospace">  çoğul iyelik  kitapları  kitaplarını  kitaplarına  kitaplarında  kitaplarından  kitaplarının  kitaplarıyla</text>
-<text x="24" y="226" fill="#e5e7eb" font-size="13" font-family="monospace"></text>
-<text x="24" y="246" fill="#e5e7eb" font-size="13" font-family="monospace">  tek form: kitap</text>
-<text x="24" y="286" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil verb gel --tense future --ability</text>
-<text x="24" y="306" fill="#e5e7eb" font-size="13" font-family="monospace">gel  (olumlu · yeterlilik)</text>
-<text x="24" y="326" fill="#e5e7eb" font-size="13" font-family="monospace"></text>
-<text x="24" y="346" fill="#e5e7eb" font-size="13" font-family="monospace">                  ben             sen             o            biz             siz               onlar</text>
-<text x="24" y="366" fill="#e5e7eb" font-size="13" font-family="monospace">  --------------  --------------  --------------  -----------  --------------  ----------------  --------------</text>
-<text x="24" y="386" fill="#e5e7eb" font-size="13" font-family="monospace">  şimdiki zaman   gelebiliyorum   gelebiliyorsun  gelebiliyor  gelebiliyoruz   gelebiliyorsunuz  gelebiliyorlar</text>
-<text x="24" y="406" fill="#e5e7eb" font-size="13" font-family="monospace">  geniş zaman     gelebilirim     gelebilirsin    gelebilir    gelebiliriz     gelebilirsiniz    gelebilirler</text>
-<text x="24" y="426" fill="#e5e7eb" font-size="13" font-family="monospace">  görülen geçmiş  gelebildim      gelebildin      gelebildi    gelebildik      gelebildiniz      gelebildiler</text>
-<text x="24" y="446" fill="#e5e7eb" font-size="13" font-family="monospace">  duyulan geçmiş  gelebilmişim    gelebilmişsin   gelebilmiş   gelebilmişiz    gelebilmişsiniz   gelebilmişler</text>
-<text x="24" y="466" fill="#e5e7eb" font-size="13" font-family="monospace">  gelecek zaman   gelebileceğim   gelebileceksin  gelebilecek  gelebileceğiz   gelebileceksiniz  gelebilecekler</text>
-<text x="24" y="486" fill="#e5e7eb" font-size="13" font-family="monospace">  gereklilik      gelebilmeliyim  gelebilmelisin  gelebilmeli  gelebilmeliyiz  gelebilmelisiniz  gelebilmeliler</text>
-<text x="24" y="506" fill="#e5e7eb" font-size="13" font-family="monospace"></text>
-<text x="24" y="526" fill="#e5e7eb" font-size="13" font-family="monospace">  soru: gelebiliyor muyum · gelebiliyor musun · gelebiliyorlar mı</text>
-<text x="24" y="566" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil number 1923</text>
-<text x="24" y="586" fill="#e5e7eb" font-size="13" font-family="monospace">1923 → bin dokuz yüz yirmi üç</text>
-<text x="24" y="606" fill="#e5e7eb" font-size="13" font-family="monospace">  sıra      : bin dokuz yüz yirmi üçüncü</text>
-<text x="24" y="626" fill="#e5e7eb" font-size="13" font-family="monospace">  üleştirme : bin dokuz yüz yirmi üçer</text>
-<text x="24" y="646" fill="#e5e7eb" font-size="13" font-family="monospace">  ekler     : 1923&#x27;e · 1923&#x27;te · 1923&#x27;ten</text>
-<text x="24" y="686" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil syllables kalemtraş öğretmen</text>
-<text x="24" y="706" fill="#e5e7eb" font-size="13" font-family="monospace">       kalemtraş  ka-lem-traş             3 hece · vurgu 3. hecede</text>
-<text x="24" y="726" fill="#e5e7eb" font-size="13" font-family="monospace">        öğretmen  öğ-ret-men              3 hece · vurgu 3. hecede</text>
+<text x="24" y="30" fill="#93c5fd" font-size="17" font-family="monospace" font-weight="bold">dil 0.2 — çözümle, denetle, ölç</text>
+<text x="24" y="46" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil analyze kitaplarımızda gidiyorlar --limit 2</text>
+<text x="24" y="66" fill="#e5e7eb" font-size="13" font-family="monospace">  kitaplarımızda</text>
+<text x="24" y="86" fill="#e5e7eb" font-size="13" font-family="monospace">    1. kitap + çoğul + 1. çoğul iyelik + bulunma            isim   22.9</text>
+<text x="24" y="106" fill="#e5e7eb" font-size="13" font-family="monospace">    2. kitaplarımızd + yönelme                              isim    1.7</text>
+<text x="24" y="126" fill="#e5e7eb" font-size="13" font-family="monospace"></text>
+<text x="24" y="146" fill="#e5e7eb" font-size="13" font-family="monospace">  gidiyorlar</text>
+<text x="24" y="166" fill="#e5e7eb" font-size="13" font-family="monospace">    1. git + şimdiki zaman + 3. çoğul                       fiil   15.0</text>
+<text x="24" y="186" fill="#e5e7eb" font-size="13" font-family="monospace">    2. gidiyor + çoğul                                      isim   -0.1</text>
+<text x="24" y="226" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil lint --text &quot;...&quot;</text>
+<text x="24" y="246" fill="#e5e7eb" font-size="13" font-family="monospace">  yer   kod        açıklama</text>
+<text x="24" y="266" fill="#e5e7eb" font-size="13" font-family="monospace">  ----  ---------  ---------------------------------------</text>
+<text x="24" y="286" fill="#e5e7eb" font-size="13" font-family="monospace">  1:1   IMLA001    yazım: «herşey» → «her şey»</text>
+<text x="24" y="306" fill="#e5e7eb" font-size="13" font-family="monospace">  1:8   IMLA001    yazım: «yanlız» → «yalnız»</text>
+<text x="24" y="326" fill="#e5e7eb" font-size="13" font-family="monospace">  1:15  SAYI001    ek uyumu ve kesme: «1923de» → «1923&#x27;te»</text>
+<text x="24" y="346" fill="#e5e7eb" font-size="13" font-family="monospace">  1:26  NOKTA001   noktalamadan önce boşluk olmaz</text>
+<text x="24" y="366" fill="#e5e7eb" font-size="13" font-family="monospace">  1:29  TEKRAR001  kelime iki kez yazılmış: «ve»</text>
+<text x="24" y="386" fill="#e5e7eb" font-size="13" font-family="monospace">  1:40  NOKTA003   üç nokta «…» tek karakterdir</text>
+<text x="24" y="406" fill="#e5e7eb" font-size="13" font-family="monospace"></text>
+<text x="24" y="426" fill="#e5e7eb" font-size="13" font-family="monospace">  IMLA001 2 · NOKTA001 1 · NOKTA003 1 · SAYI001 1 · TEKRAR001 1</text>
+<text x="24" y="466" fill="#6ee7b7" font-size="14" font-family="monospace">$ dil stats --text &quot;...&quot;</text>
+<text x="24" y="486" fill="#e5e7eb" font-size="13" font-family="monospace">  kelime        : 17 (16 tekil)</text>
+<text x="24" y="506" fill="#e5e7eb" font-size="13" font-family="monospace">  cümle         : 3 · paragraf: 1</text>
+<text x="24" y="526" fill="#e5e7eb" font-size="13" font-family="monospace">  ort. cümle    : 5.7 kelime · ort. kelime: 6.5 harf · 2.71 hece</text>
+<text x="24" y="546" fill="#e5e7eb" font-size="13" font-family="monospace">  en uzun kelime: türetilebilir (13 harf)</text>
+<text x="24" y="566" fill="#e5e7eb" font-size="13" font-family="monospace">  çeşitlilik    : 0.94 · okuma süresi: 0.1 dk</text>
+<text x="24" y="586" fill="#e5e7eb" font-size="13" font-family="monospace">  Ateşman       : 75.3 → kolay</text>
+<text x="24" y="606" fill="#e5e7eb" font-size="13" font-family="monospace">  sık kelimeler : türkçe (1), sondan (1), eklemeli (1), dildir (1), yüzden (1), kökten (1), onlarca (1), kelime (1)</text>
 </svg>

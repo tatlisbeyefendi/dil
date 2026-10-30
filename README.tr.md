@@ -32,6 +32,9 @@ kitap  (yumuşama · düşme yok)
 | `dil number <sayı>` | sayıyı yazıya döker, sıra/üleştirme eki ve hâl ekini hesaplar |
 | `dil syllables <kelime>` | heceleme, tireleme, vurgu tahmini |
 | `dil sound <kelime>` | ünlü uyumu, yumuşama, düşme — ses olaylarını çözümler |
+| **`dil analyze`** | **kelimeyi kök + özelliklerine ayırır** (`kitaplarımızda` → `kitap + çoğul + 1. çoğul iyelik + bulunma`) |
+| **`dil lint`** | **metni denetler**: yazım, sayı eki, soru eki, noktalama, tekrar · `--fix` ile düzeltir |
+| **`dil stats`** | **ölçer**: kelime/cümle/hece, çeşitlilik, okuma süresi, Ateşman okunabilirlik |
 | `dil lexicon` | istisna sözlüğü (yumuşayan ve ünlü düşüren kökler) |
 | `--json` | her komut için makine okunur çıktı |
 
@@ -67,6 +70,56 @@ $ dil syllables kalemtraş öğretmen pencereden
        kalemtraş  ka-lem-traş             3 hece · vurgu 3. hecede
         öğretmen  öğ-ret-men              3 hece · vurgu 3. hecede
       pencereden  pen-ce-re-den           4 hece · vurgu 4. hecede
+```
+
+## Ters yön: çözümleme
+
+`dil analyze`, üreticiyi tersine çalıştırır: bir kök ve özellik kümesi tahmin eder, kelimeyi
+yeniden üretir ve **ancak birebir tutuyorsa** çözümlemeyi kabul eder. Yumuşama ve ünlü düşmesi
+de geri alınır (`çocuğuna` → `çocuk`, `ağzında` → `ağız`, `gidiyorlar` → `git`).
+
+```
+$ dil analyze kitaplarımızda gidiyorlar
+  kitaplarımızda
+    1. kitap + çoğul + 1. çoğul iyelik + bulunma            isim   22.9
+
+  gidiyorlar
+    1. git + şimdiki zaman + 3. çoğul                       fiil   15.0
+```
+
+## Metin denetimi
+
+Yalnızca savunabildiğimiz kurallar: kesinleşmiş yazım hataları, soru ekinin ayrı yazımı,
+sayılara gelen ek ve kesme işareti, noktalama ve kelime tekrarı. `de/da`nın ayrı mı bitişik mi
+yazılacağı gibi cümle anlamı gerektiren kurallar **bilerek** yok — tahmin etmiyoruz.
+
+```
+$ dil lint --text "herşey yanlız 1923de oldu , ve ve bitti..."
+  yer   kod        açıklama
+  1:1   IMLA001    yazım: «herşey» → «her şey»
+  1:8   IMLA001    yazım: «yanlız» → «yalnız»
+  1:15  SAYI001    ek uyumu ve kesme: «1923de» → «1923'te»
+  1:26  NOKTA001   noktalamadan önce boşluk olmaz
+  1:29  TEKRAR001  kelime iki kez yazılmış: «ve»
+  1:40  NOKTA003   üç nokta «…» tek karakterdir
+
+$ dil lint metin.txt --fix --write      # .bak yedeği alır, dosyayı düzeltir
+```
+
+## Ölçüm ve okunabilirlik
+
+Ateşman (1997) formülü — `198,825 − 40,175 × (hece/kelime) − 2,610 × (kelime/cümle)` — ile
+metnin okunabilirlik düzeyi; 90-100 çok kolay, 70-89 kolay, 50-69 orta, 30-49 zor.
+
+```
+$ dil stats makale.txt
+  kelime        : 1.284 (612 tekil)
+  cümle         : 74 · paragraf: 12
+  ort. cümle    : 17,4 kelime · ort. kelime: 6,1 harf · 2,63 hece
+  en uzun kelime: sorumluluklarımızdan (21 harf)
+  çeşitlilik    : 0,48 · okuma süresi: 6,4 dk
+  Ateşman       : 61,2 → orta güçlükte
+  sık kelimeler : türkçe (18), kelime (14), ekler (11), cümle (9)
 ```
 
 ## Kütüphane olarak
@@ -110,7 +163,7 @@ olmayan bir kelime de sorunsuz çekilir, sadece istisnaları bilemez.
 ## Testler
 
 ```bash
-python3 -m pytest      # 244 test
+python3 -m pytest      # 317 test
 python3 -m ruff check .
 ```
 
@@ -128,6 +181,11 @@ Testler gerçek Türkçe formları doğrular: `kitabımızda`, `okumuyorum`, `g�
 
 Her şey bitmedi, bilerek yayınlıyorum — nerede tökezlediğini bileyim diye:
 
+- **Çözümleme tam değil.** Yapım eki almış kelimeler (`kitaptaki`, `güzellik`) çözümlenemez;
+  sözlükte olmayan köklerde birden çok okuma çıkabilir.
+- **Denetim bilerek dar.** `de/da` ayrı yazımı, büyük harf kullanımı ve cümle düzeyindeki
+  hatalar denetlenmiyor, çünkü bunlar bağlam ister.
+
 - **Yapım ekleri yok.** `-ki`, `-lik`, `-ci`, `-siz` gibi türetme ekleri henüz çalışmıyor,
   yalnızca çekim var. `kitaptaki`, `güzellik`, `gözcü` üretilemez.
 - **İstisna sözlüğü küçük.** ~90 kök tanımlı; listede olmayan bir kelimenin yumuşaması ya da
@@ -143,10 +201,12 @@ tek satır.
 
 ## Yol haritası
 
-- [ ] `dil analyze` — yüzey biçimden kök ve özellik çözümlemesi (`kitaplarımızdakiler`)
-- [ ] `dil lint` — metin denetimi: `de/da`, `ki`, `mi`, `herşey`, `yanlız` ve noktalama
-- [ ] `dil stats` — okunabilirlik (Ateşman), kelime sıklığı, cümle uzunluğu
-- [ ] `dil hyphenate` — dosya adı/için satır sonu tirelemesi ve `--max` genişlik
+- [x] `dil analyze` — yüzey biçimden kök ve özellik çözümlemesi
+- [x] `dil lint` — metin denetimi: `mi`, `herşey`, `yanlız`, sayı ekleri, noktalama
+- [x] `dil stats` — Ateşman okunabilirlik, kelime sıklığı, cümle uzunluğu
+- [ ] yapım ekleri (`-ki`, `-lik`, `-ci`, `-siz`) ve `kitaptaki` gibi türetmeler
+- [ ] birleşik zamanlar (`geliyormuşum`, `gelmiş olacağım`)
+- [ ] `dil lint` için `de/da` ve büyük harf kuralları (bağlam gerektiriyor)
 
 ## Lisans
 

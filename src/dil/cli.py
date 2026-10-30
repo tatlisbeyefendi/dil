@@ -7,12 +7,16 @@ import contextlib
 import json
 import sys
 import unicodedata
+from pathlib import Path
 from typing import Any
 
 from . import __version__
+from . import lint as linting
 from . import numbers as num
 from . import phonetics as ph
+from . import stats as textstats
 from . import syllables as syl
+from .analyze import analyze
 from .lexicon import DEFAULT as LEXICON
 from .nouns import CASE_LABELS, CASES, POSSESSIVES, decline, full_paradigm
 from .verbs import (
@@ -290,6 +294,126 @@ def cmd_lexicon(args: argparse.Namespace) -> int:
     return 0
 
 
+# --------------------------------------------------------------------------- analyze
+
+
+def cmd_analyze(args: argparse.Namespace) -> int:
+    words = args.words
+    results = {word: analyze(word, kind=args.kind, limit=args.limit) for word in words}
+    if args.json:
+        _emit_json({word: [item.as_dict() for item in rows] for word, rows in results.items()})
+        return 0
+    empty = 0
+    for word, rows in results.items():
+        print(f"  {word}")
+        if not rows:
+            print("      çözümleme bulunamadı (kök bilinmiyor veya türetme eki var)")
+            empty += 1
+            continue
+        for index, item in enumerate(rows, start=1):
+            print(f"    {index}. {item.describe():<52} {item.kind:<5} {item.score:5.1f}")
+        print()
+    return 0 if empty == 0 else 0
+
+
+# --------------------------------------------------------------------------- lint
+
+
+def _read_text(args: argparse.Namespace) -> str:
+    if args.text is not None:
+        return args.text
+    if args.path is None:
+        raise ValueError("bir dosya ya da --text ver")
+    return Path(args.path).expanduser().read_text(encoding="utf-8")
+
+
+def cmd_lint(args: argparse.Namespace) -> int:
+    try:
+        text = _read_text(args)
+    except (OSError, ValueError) as error:
+        print(f"{PROG}: {error}", file=sys.stderr)
+        return 2
+
+    issues = linting.lint(text)
+    if args.json:
+        _emit_json(
+            {
+                "issues": [issue.as_dict() for issue in issues],
+                "summary": linting.summary(issues),
+                "total": len(issues),
+            }
+        )
+        return 0
+
+    if not issues:
+        print("  ✓ sorun bulunamadı")
+        return 0
+
+    print(
+        render_table(
+            ["yer", "kod", "açıklama"],
+            [[f"{issue.line}:{issue.column}", issue.code, issue.message] for issue in issues],
+        )
+    )
+    print()
+    counts = linting.summary(issues)
+    print("  " + " · ".join(f"{code} {count}" for code, count in counts.items()))
+
+    if args.fix:
+        fixed, applied = linting.apply_fixes(text, issues)
+        if args.output or (args.path and args.write):
+            target = Path(args.output or args.path).expanduser()
+            if args.path and not args.output:
+                backup = target.with_name(target.name + ".bak")
+                backup.write_text(text, encoding="utf-8")
+                print(f"  yedek: {backup}")
+            target.write_text(fixed, encoding="utf-8")
+            print(f"  {applied} düzeltme → {target}")
+        else:
+            print()
+            sys.stdout.write(fixed)
+    return 0
+
+
+# --------------------------------------------------------------------------- stats
+
+
+def cmd_stats(args: argparse.Namespace) -> int:
+    try:
+        text = _read_text(args)
+    except (OSError, ValueError) as error:
+        print(f"{PROG}: {error}", file=sys.stderr)
+        return 2
+    numbers = textstats.measure(text)
+    if args.json:
+        payload = numbers.as_dict()
+        payload["hyphenation"] = textstats.hyphenation_report(text)
+        _emit_json(payload)
+        return 0
+
+    print(f"  kelime        : {numbers.words} ({numbers.unique_words} tekil)")
+    print(f"  cümle         : {numbers.sentences} · paragraf: {numbers.paragraphs}")
+    print(
+        f"  ort. cümle    : {numbers.average_sentence_length:.1f} kelime"
+        f" · ort. kelime: {numbers.average_word_length:.1f} harf"
+        f" · {numbers.average_syllables_per_word:.2f} hece"
+    )
+    print(f"  en uzun kelime: {numbers.longest_word} ({len(numbers.longest_word)} harf)")
+    print(
+        f"  çeşitlilik    : {numbers.lexical_diversity:.2f}"
+        f" · okuma süresi: {numbers.reading_time_minutes:.1f} dk"
+    )
+    print(f"  Ateşman       : {numbers.atesman:.1f} → {numbers.atesman_label}")
+    if numbers.content_word_frequency:
+        print(
+            "  sık kelimeler : "
+            + ", ".join(f"{word} ({count})" for word, count in numbers.content_word_frequency[:8])
+        )
+    if numbers.sentences_over_40:
+        print(f"  ⚠ {numbers.sentences_over_40} cümle 40 kelimeden uzun")
+    return 0
+
+
 # --------------------------------------------------------------------------- parser
 
 
@@ -332,6 +456,33 @@ def build_parser() -> argparse.ArgumentParser:
     sound = subparsers.add_parser("sound", aliases=["ses"], help="ses olaylarını çözümle")
     sound.add_argument("word", help="kelime")
     sound.set_defaults(func=cmd_sound)
+
+    analyzer = subparsers.add_parser(
+        "analyze", aliases=["çözümle"], help="kelimeyi kök + özelliklerine ayır"
+    )
+    analyzer.add_argument("words", nargs="+", help="çözümlenecek kelime(ler)")
+    analyzer.add_argument("--kind", "-k", choices=["isim", "fiil"], help="yalnız bu türü ara")
+    analyzer.add_argument(
+        "--limit", "-n", type=int, default=5, help="kelime başına en fazla kaç okuma"
+    )
+    analyzer.set_defaults(func=cmd_analyze)
+
+    linter = subparsers.add_parser(
+        "lint", aliases=["denetle"], help="metni denetle: yazım, ek, noktalama"
+    )
+    linter.add_argument("path", nargs="?", help="dosya")
+    linter.add_argument("--text", "-t", help="metni doğrudan ver")
+    linter.add_argument("--fix", action="store_true", help="düzeltilmiş metni üret")
+    linter.add_argument("--write", action="store_true", help="dosyayı yerinde düzelt (.bak yedeği)")
+    linter.add_argument("--output", "-o", help="düzeltilmiş metni buraya yaz")
+    linter.set_defaults(func=cmd_lint)
+
+    stats = subparsers.add_parser(
+        "stats", aliases=["istatistik"], help="kelime, cümle ve okunabilirlik ölçümü"
+    )
+    stats.add_argument("path", nargs="?", help="dosya")
+    stats.add_argument("--text", "-t", help="metni doğrudan ver")
+    stats.set_defaults(func=cmd_stats)
 
     lexicon = subparsers.add_parser("lexicon", aliases=["sözlük"], help="istisna sözlüğü")
     lexicon.add_argument("--kind", choices=["isim", "fiil"], help="türe göre süz")

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
@@ -124,3 +125,80 @@ def test_missing_subcommand_exits_with_usage() -> None:
     with pytest.raises(SystemExit) as exit_info:
         main([])
     assert exit_info.value.code == 2
+
+
+def test_analyze_command(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["analyze", "kitaplarımızda"]) == 0
+    out = capsys.readouterr().out
+    assert "kitap" in out
+    assert "1. çoğul iyelik" in out
+
+
+def test_analyze_json(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["--json", "analyze", "geldim", "--kind", "fiil"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["geldim"][0]["stem"] == "gel"
+    assert payload["geldim"][0]["features"]["tense"] == "past"
+
+
+def test_lint_command_from_text(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["lint", "--text", "herşey yanlız 1923de"]) == 0
+    out = capsys.readouterr().out
+    assert "IMLA001" in out
+    assert "SAYI001" in out
+
+
+def test_lint_clean_text(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["lint", "--text", "Bu cümle doğru."]) == 0
+    assert "sorun bulunamadı" in capsys.readouterr().out
+
+
+def test_lint_fix_prints_corrected_text(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["lint", "-t", "yanlız geldim ...", "--fix"]) == 0
+    out = capsys.readouterr().out
+    assert "yalnız" in out
+    assert "…" in out
+
+
+def test_lint_fix_writes_file_with_backup(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    target = tmp_path / "metin.txt"
+    target.write_text("herşey yanlız", encoding="utf-8")
+    assert main(["lint", str(target), "--fix", "--write"]) == 0
+    assert target.read_text(encoding="utf-8") == "her şey yalnız"
+    assert (tmp_path / "metin.txt.bak").read_text(encoding="utf-8") == "herşey yanlız"
+    assert "yedek" in capsys.readouterr().out
+
+
+def test_lint_json(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    target = tmp_path / "metin.txt"
+    target.write_text("yanlız", encoding="utf-8")
+    assert main(["--json", "lint", str(target)]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["total"] == 1
+    assert payload["summary"] == {"IMLA001": 1}
+
+
+def test_stats_command(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["stats", "--text", "Bir cümle. İki cümle."]) == 0
+    out = capsys.readouterr().out
+    assert "kelime" in out
+    assert "Ateşman" in out
+
+
+def test_stats_json(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["--json", "stats", "-t", "Bir cümle. İki cümle."]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["words"] == 4
+    assert payload["sentences"] == 2
+    assert "hyphenation" in payload
+
+
+def test_missing_file_is_reported(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["stats", str(tmp_path / "yok.txt")]) == 2
+    assert "dil" in capsys.readouterr().err
+
+
+def test_lint_without_input_is_an_error(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["lint"]) == 2

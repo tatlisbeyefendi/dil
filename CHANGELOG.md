@@ -3,6 +3,24 @@
 All notable changes are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/)
 and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] — 2026-10-30
+
+Hâlâ **ağır geliştirme aşamasında** — ama üç büyük eksik kapandı.
+
+### Eklenenler
+- **`dil analyze`** — ters çözümleme. Kök ve özellik tahmini üretilir, kelime yeniden üretilir ve
+  ancak birebir tutuyorsa kabul edilir (gidiş-dönüş kanıtı). Yumuşama (`kitabı` → `kitap`), ünlü
+  düşmesi (`ağzında` → `ağız`) ve `de/ye` düzensizliği (`yiyemiyorum` → `ye`) geri alınır.
+- **`dil lint`** — yazım sözlüğü, soru ekinin ayrı yazımı, sayı eki + kesme işareti (mevcut sayı
+  motoruyla hesaplanır), noktalama ve kelime tekrarı; `--fix`, `--write` (`.bak` yedekli), `--json`.
+- **`dil stats`** — kelime/cümle/hece sayıları, sözcük çeşitliliği, okuma süresi, harf ve kelime
+  sıklığı ve **Ateşman (1997) okunabilirlik** puanı.
+- CLI'da `--json` desteği yeni komutlarda da var; 244 → **317 test**.
+
+### Düzeltmeler
+- Ateşman katsayıları kaynağından doğrulandı (`198,825 − 40,175 × hece/kelime − 2,610 ×
+  kelime/cümle`); ilk denemede yanlış hatırlanmıştı.
+
 ## [0.1.0] — 2026-10-30
 
 > **Ağır geliştirme aşamasında.** İlk yayın; kuralların bir kısmı hâlâ yazılıyor ve
